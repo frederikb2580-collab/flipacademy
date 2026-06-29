@@ -73,7 +73,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const origin = req.headers.get("origin") ?? process.env.NEXTAUTH_URL!;
+  const url = new URL(req.url);
+  const origin = `${url.protocol}//${url.host}`;
 
   const course = await db.course.findFirst({
     where: { published: true },
@@ -84,7 +85,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${origin}/#pris`);
   }
 
-  const url = new URL(req.url);
   const couponCode = url.searchParams.get("coupon") ?? undefined;
   const affiliateCode = url.searchParams.get("ref") ?? undefined;
 
