@@ -26,13 +26,21 @@ export const metadata: Metadata = {
     "sidehustle",
     "kursus",
   ],
+  metadataBase: new URL("https://flipacademy.dk"),
   openGraph: {
     title: "FlipAcademy DK — Lær at tjene penge på tøjflipping",
     description:
-      "Det komplette kursus i tøjflipping. Lifetime adgang for kun 399 DKK.",
+      "Det komplette kursus i tøjflipping. 100 moduler, Discord-fællesskab og lifetime adgang for kun 399 DKK.",
     type: "website",
     locale: "da_DK",
     siteName: "FlipAcademy DK",
+    url: "https://flipacademy.dk",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FlipAcademy DK — Lær at tjene penge på tøjflipping",
+    description:
+      "100 moduler, Discord-fællesskab og lifetime adgang for kun 399 DKK.",
   },
   icons: {
     icon: "/favicon.svg",
