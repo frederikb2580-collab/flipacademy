@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { addUserToGuild } from "@/lib/discord";
+import { logDiscordConnect, logError } from "@/lib/discord-logger";
 
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
@@ -79,9 +80,15 @@ export async function GET(req: NextRequest) {
       },
     });
 
+    const user = await db.user.findUnique({ where: { id: userId }, select: { email: true } });
+    if (user) {
+      await logDiscordConnect(user.email, discordUserData.username);
+    }
+
     return NextResponse.redirect(`${baseUrl}/dashboard/discord?success=true`);
   } catch (error) {
     console.error("Discord callback error:", error);
+    await logError("Discord Callback", String(error));
     return NextResponse.redirect(`${baseUrl}/dashboard/discord?error=unknown`);
   }
 }

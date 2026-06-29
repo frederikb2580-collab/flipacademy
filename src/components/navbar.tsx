@@ -16,7 +16,7 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500" />
+            <img src="/logo.svg" alt="FlipAcademy" className="h-8 w-8 rounded-lg" />
             <span className="text-xl font-bold text-white">FlipAcademy</span>
           </Link>
 

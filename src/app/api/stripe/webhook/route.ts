@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { sendWelcomeEmail, sendOrderConfirmation } from "@/lib/email";
 import { assignRole } from "@/lib/discord";
 import { generateAffiliateCode } from "@/lib/utils";
+import { logPurchase, logRefund, logNewUser, logError } from "@/lib/discord-logger";
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -56,6 +57,8 @@ export async function POST(req: NextRequest) {
           password: tempPassword,
         },
       });
+
+      await logNewUser(email, name);
     }
 
     let couponId: string | undefined;
@@ -138,11 +141,20 @@ export async function POST(req: NextRequest) {
 
     const course = await db.course.findUnique({ where: { id: courseId } });
 
+    await logPurchase(
+      email,
+      name,
+      session.amount_total! / 100,
+      course?.title ?? "FlipAcademy Kursus",
+      couponCode || undefined
+    );
+
     try {
       await sendWelcomeEmail(email, name);
       await sendOrderConfirmation(email, name, course?.title ?? "FlipAcademy Kursus", session.amount_total! / 100);
     } catch (emailErr) {
       console.error("Email sending failed:", emailErr);
+      await logError("Email", String(emailErr));
     }
 
     const discordUser = await db.discordUser.findUnique({
@@ -206,6 +218,8 @@ export async function POST(req: NextRequest) {
           console.error("Discord role removal failed:", discordErr);
         }
       }
+
+      await logRefund(order.user.email, charge.amount_refunded / 100, order.id);
 
       await db.log.create({
         data: {

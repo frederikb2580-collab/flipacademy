@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500" />
+              <img src="/logo.svg" alt="FlipAcademy" className="h-8 w-8 rounded-lg" />
               <span className="text-xl font-bold text-white">FlipAcademy</span>
             </div>
             <p className="text-sm text-gray-400">
@@ -54,6 +54,11 @@ export function Footer() {
                   Refunderingspolitik
                 </Link>
               </li>
+              <li>
+                <Link href="/cookiepolitik" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  Cookiepolitik
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -74,9 +79,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10">
+        <div className="mt-12 pt-8 border-t border-white/10 space-y-2">
           <p className="text-center text-sm text-gray-500">
             &copy; {new Date().getFullYear()} FlipAcademy DK. Alle rettigheder forbeholdes.
+          </p>
+          <p className="text-center text-xs text-gray-600">
+            Kursusindholdet er AI-genereret. Discord-fællesskabet er kun tilgængeligt for betalende medlemmer.
           </p>
         </div>
       </div>

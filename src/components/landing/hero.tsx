@@ -18,9 +18,12 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm text-purple-300 mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/30 bg-purple-500/10 px-4 py-1.5 text-sm text-purple-300 mb-4">
             <Sparkles className="h-4 w-4" />
             Lifetime adgang for kun 399 DKK
+          </div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-xs text-blue-300 mb-8">
+            AI-genereret kursus + eksklusivt Discord-fællesskab
           </div>
         </motion.div>
 
@@ -43,8 +46,8 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mt-6 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto"
         >
-          Det komplette kursus i at købe og sælge tøj med profit.
-          Fra sourcing til skalering — alt hvad du behøver for at starte din flipping-forretning.
+          100 moduler med alt du skal vide om at købe og sælge tøj med profit.
+          Fra sourcing til skalering — plus adgang til vores eksklusive Discord-fællesskab kun for medlemmer.
         </motion.p>
 
         <motion.div
@@ -71,9 +74,9 @@ export function Hero() {
           className="mt-16 grid grid-cols-3 gap-8 max-w-lg mx-auto"
         >
           {[
-            { value: "8+", label: "Moduler" },
-            { value: "50+", label: "Lektioner" },
-            { value: "500+", label: "Elever" },
+            { value: "100", label: "Moduler" },
+            { value: "104", label: "Lektioner" },
+            { value: "Discord", label: "Fællesskab" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { registerSchema } from "@/lib/validations";
+import { logNewUser } from "@/lib/discord-logger";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,6 +35,8 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
       },
     });
+
+    await logNewUser(email, name);
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch {

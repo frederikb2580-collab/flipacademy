@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { CookieBanner } from "@/components/cookie-banner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,6 +34,9 @@ export const metadata: Metadata = {
     locale: "da_DK",
     siteName: "FlipAcademy DK",
   },
+  icons: {
+    icon: "/favicon.svg",
+  },
   robots: {
     index: true,
     follow: true,
@@ -47,7 +51,10 @@ export default function RootLayout({
   return (
     <html lang="da" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen bg-black text-white font-sans">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <CookieBanner />
+        </Providers>
       </body>
     </html>
   );

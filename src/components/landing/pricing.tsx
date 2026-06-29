@@ -6,14 +6,14 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 
 const features = [
-  "8+ moduler med 50+ lektioner",
-  "Video, tekst og PDF materiale",
-  "Lifetime adgang",
-  "Gratis opdateringer",
-  "Discord community adgang",
-  "Direkte support",
-  "Downloadbare ressourcer",
-  "Quizzer og opgaver",
+  "100 moduler med 104+ lektioner",
+  "AI-genereret kursusindhold af høj kvalitet",
+  "Eksklusivt Discord-fællesskab kun for medlemmer",
+  "Lifetime adgang — betal én gang",
+  "Gratis opdateringer når nyt indhold tilføjes",
+  "Fællesskab med andre flippere",
+  "Kvittering og ordrebekræftelse på email",
+  "14 dages pengene-tilbage-garanti",
 ];
 
 export function Pricing() {
@@ -82,7 +82,10 @@ export function Pricing() {
             </Button>
 
             <p className="text-center text-xs text-gray-500 mt-4">
-              14 dages pengene-tilbage-garanti
+              14 dages pengene-tilbage-garanti &middot; Kvittering sendes på email
+            </p>
+            <p className="text-center text-xs text-gray-600 mt-2">
+              Dette kursus er AI-genereret. Du får adgang til et eksklusivt Discord-fællesskab med andre medlemmer.
             </p>
           </div>
         </motion.div>
