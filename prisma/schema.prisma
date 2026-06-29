@@ -1,0 +1,378 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Authentication ─────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+  progress      Progress[]
+  favorites     Favorite[]
+  notifications Notification[]
+  discordUser   DiscordUser?
+  affiliateCode AffiliateCode?
+  referrals     Referral[]       @relation("ReferredUser")
+  affiliatePayouts AffiliatePayout[]
+  logs          Log[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ─── Discord ────────────────────────────────────────────────────
+
+model DiscordUser {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  discordId       String   @unique
+  discordUsername  String
+  discordAvatar   String?
+  accessToken     String?  @db.Text
+  refreshToken    String?  @db.Text
+  guildJoined     Boolean  @default(false)
+  roleAssigned    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ─── Courses ────────────────────────────────────────────────────
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?  @db.Text
+  thumbnail   String?
+  price       Int
+  published   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  modules  Module[]
+  orders   Order[]
+  progress Progress[]
+  favorites Favorite[]
+}
+
+model Module {
+  id          String   @id @default(cuid())
+  courseId     String
+  title       String
+  description String?  @db.Text
+  order       Int      @default(0)
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+}
+
+model Lesson {
+  id          String     @id @default(cuid())
+  moduleId    String
+  title       String
+  description String?    @db.Text
+  content     String?    @db.Text
+  videoUrl    String?
+  type        LessonType @default(VIDEO)
+  order       Int        @default(0)
+  published   Boolean    @default(false)
+  duration    Int?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  module    Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  files     File[]
+  progress  Progress[]
+  quizzes   Quiz[]
+}
+
+enum LessonType {
+  VIDEO
+  TEXT
+  PDF
+  QUIZ
+}
+
+model File {
+  id        String   @id @default(cuid())
+  lessonId  String
+  name      String
+  url       String
+  size      Int?
+  type      String?
+  createdAt DateTime @default(now())
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id       String         @id @default(cuid())
+  lessonId String
+  question String
+  options  QuizOption[]
+  order    Int            @default(0)
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+}
+
+model QuizOption {
+  id        String  @id @default(cuid())
+  quizId    String
+  text      String
+  isCorrect Boolean @default(false)
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+// ─── Progress ───────────────────────────────────────────────────
+
+model Progress {
+  id          String   @id @default(cuid())
+  userId      String
+  courseId     String
+  lessonId    String
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId   String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+// ─── Orders & Payments ─────────────────────────────────────────
+
+model Order {
+  id               String      @id @default(cuid())
+  userId           String
+  courseId          String
+  status           OrderStatus @default(PENDING)
+  amount           Int
+  currency         String      @default("DKK")
+  stripeSessionId  String?     @unique
+  stripePaymentId  String?
+  couponId         String?
+  affiliateCodeId  String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  coupon        Coupon?        @relation(fields: [couponId], references: [id])
+  affiliateCode AffiliateCode? @relation(fields: [affiliateCodeId], references: [id])
+  transactions  Transaction[]
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  REFUNDED
+  FAILED
+}
+
+model Transaction {
+  id            String          @id @default(cuid())
+  orderId       String
+  type          TransactionType
+  amount        Int
+  currency      String          @default("DKK")
+  stripeEventId String?         @unique
+  metadata      Json?
+  createdAt     DateTime        @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+enum TransactionType {
+  PAYMENT
+  REFUND
+}
+
+// ─── Coupons ────────────────────────────────────────────────────
+
+model Coupon {
+  id          String     @id @default(cuid())
+  code        String     @unique
+  type        CouponType
+  value       Int
+  maxUses     Int?
+  usedCount   Int        @default(0)
+  expiresAt   DateTime?
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  orders Order[]
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
+}
+
+// ─── Affiliates ─────────────────────────────────────────────────
+
+model AffiliateCode {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  code           String   @unique
+  commissionRate Int      @default(20)
+  totalEarned    Int      @default(0)
+  totalPaid      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders   Order[]
+  referrals Referral[]
+  payouts  AffiliatePayout[]
+}
+
+model Referral {
+  id              String   @id @default(cuid())
+  affiliateCodeId String
+  referredUserId  String
+  orderId         String?
+  commission      Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  affiliateCode AffiliateCode @relation(fields: [affiliateCodeId], references: [id], onDelete: Cascade)
+  referredUser  User          @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
+}
+
+model AffiliatePayout {
+  id              String        @id @default(cuid())
+  userId          String
+  affiliateCodeId String
+  amount          Int
+  status          PayoutStatus  @default(PENDING)
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  affiliateCode AffiliateCode @relation(fields: [affiliateCodeId], references: [id], onDelete: Cascade)
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+// ─── Notifications & Emails ────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailLog {
+  id        String   @id @default(cuid())
+  to        String
+  subject   String
+  body      String   @db.Text
+  status    String
+  resendId  String?
+  createdAt DateTime @default(now())
+}
+
+// ─── Logging & Settings ────────────────────────────────────────
+
+model Log {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  details   String?  @db.Text
+  ip        String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
