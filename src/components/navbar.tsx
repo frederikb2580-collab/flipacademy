@@ -44,7 +44,7 @@ export function Navbar() {
               className="text-sm text-gray-300 hover:text-white transition-colors"
             >
               FAQ
-            </Link>
+            </a>
 
             {session ? (
               <div className="flex items-center gap-3">
