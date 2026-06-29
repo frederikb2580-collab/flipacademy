@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && node -e \"require('fs').writeFileSync('src/generated/prisma/index.ts','export { PrismaClient } from \\\"./client\\\";\\nexport * from \\\"./enums\\\";\\n')\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
