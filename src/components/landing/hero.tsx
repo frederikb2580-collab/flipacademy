@@ -57,13 +57,13 @@ export function Hero() {
           className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
         >
           <Button size="xl" asChild>
-            <Link href="/#pris">
+            <a href="#pris">
               Køb Lifetime Adgang
               <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
+            </a>
           </Button>
           <Button variant="secondary" size="xl" asChild>
-            <Link href="/#kurset">Se hvad du lærer</Link>
+            <a href="#kurset">Se hvad du lærer</a>
           </Button>
         </motion.div>
 

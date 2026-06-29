@@ -21,25 +21,25 @@ export function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
-            <Link
+            <a
               href="/#kurset"
               className="text-sm text-gray-300 hover:text-white transition-colors"
             >
               Kurset
-            </Link>
-            <Link
+            </a>
+            <a
               href="/#resultater"
               className="text-sm text-gray-300 hover:text-white transition-colors"
             >
               Resultater
-            </Link>
-            <Link
+            </a>
+            <a
               href="/#pris"
               className="text-sm text-gray-300 hover:text-white transition-colors"
             >
               Pris
-            </Link>
-            <Link
+            </a>
+            <a
               href="/#faq"
               className="text-sm text-gray-300 hover:text-white transition-colors"
             >
@@ -77,7 +77,7 @@ export function Navbar() {
                   <Link href="/login">Log ind</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link href="/#pris">Køb adgang</Link>
+                  <a href="/#pris">Køb adgang</a>
                 </Button>
               </div>
             )}
@@ -101,34 +101,34 @@ export function Navbar() {
             className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl"
           >
             <div className="px-4 py-4 space-y-3">
-              <Link
+              <a
                 href="/#kurset"
                 className="block text-gray-300 hover:text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 Kurset
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#resultater"
                 className="block text-gray-300 hover:text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 Resultater
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#pris"
                 className="block text-gray-300 hover:text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 Pris
-              </Link>
-              <Link
+              </a>
+              <a
                 href="/#faq"
                 className="block text-gray-300 hover:text-white"
                 onClick={() => setMobileOpen(false)}
               >
                 FAQ
-              </Link>
+              </a>
               <div className="border-t border-white/10 pt-3 space-y-2">
                 {session ? (
                   <>
@@ -156,9 +156,9 @@ export function Navbar() {
                       </Link>
                     </Button>
                     <Button className="w-full" asChild>
-                      <Link href="/#pris" onClick={() => setMobileOpen(false)}>
+                      <a href="/#pris" onClick={() => setMobileOpen(false)}>
                         Køb adgang
-                      </Link>
+                      </a>
                     </Button>
                   </>
                 )}

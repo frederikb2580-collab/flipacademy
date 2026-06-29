@@ -75,10 +75,10 @@ export function Pricing() {
             </ul>
 
             <Button size="xl" className="w-full" asChild>
-              <Link href="/api/stripe/checkout">
+              <a href="/api/stripe/checkout">
                 <Zap className="mr-2 h-5 w-5" />
                 Køb Lifetime Adgang — 399 DKK
-              </Link>
+              </a>
             </Button>
 
             <p className="text-center text-xs text-gray-500 mt-4">
